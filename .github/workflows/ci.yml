@@ -28,4 +28,4 @@ jobs:
           file: Dockerfile
           push: true
           tags: | 
-            ghcr.io/${{ github.repository }}:${{ github.sha }}
+            ghcr.io/figtreecode/gardenbug:${{ github.sha }}
