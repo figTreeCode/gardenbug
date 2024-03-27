@@ -11,14 +11,14 @@ import (
 )
 
 func main() {
-	err := godotenv.Load()
-	if err != nil {
-		panic(err)
-	}
+	godotenv.Load()
 
 	ctx := context.Background()
 
 	conn, err := models.NewDatabaseConnection(ctx)
+	if err != nil {
+		panic(err)
+	}
 
 	router := chi.NewRouter()
 
