@@ -1,29 +1,30 @@
 package main
 
 import (
-	"fmt"
+	"context"
+	"gardenbug/internal/models"
+	"gardenbug/internal/transport/rest"
 	"net/http"
 
-	"github.com/gorilla/mux"
+	"github.com/go-chi/chi/v5"
+	"github.com/joho/godotenv"
 )
 
 func main() {
-	router := mux.NewRouter()
+	err := godotenv.Load()
+	if err != nil {
+		panic(err)
+	}
 
-	router.HandleFunc("/", homeHandler).Methods("GET")
-    router.HandleFunc("/api/data", apiHandler).Methods("GET")
+	ctx := context.Background()
 
-    // Start the server
-    port := 8080
-    fmt.Printf("Server is running on http://localhost:%d\n", port)
-    http.ListenAndServe(fmt.Sprintf(":%d", port), router)
-}
+	conn, err := models.NewDatabaseConnection(ctx)
 
-func homeHandler(w http.ResponseWriter, r *http.Request) {
-    fmt.Fprintln(w, "Welcome to the Home Page!")
-}
+	router := chi.NewRouter()
 
-func apiHandler(w http.ResponseWriter, r *http.Request) {
-    // Your API logic here
-    fmt.Fprintln(w, "API Endpoint - Provide your data here")
+	router.Route("/api", func(r chi.Router) {
+		rest.SetupRoutes(r, conn)
+	})
+
+	http.ListenAndServe(":8080", router)
 }
