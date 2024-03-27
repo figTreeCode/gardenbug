@@ -15,6 +15,8 @@ FROM alpine:latest
 
 WORKDIR /app
 
+RUN apk add ca-certificates
+
 COPY --from=build /app/main /app/main 
 
 EXPOSE 8080
